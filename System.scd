@@ -1,0 +1,117 @@
+////////////////////////////////////////////////////////////
+// SYSTEM — ADAPTIVE TEMPERAMENT CORE CONSTRUCTOR (CLEAN)
+////////////////////////////////////////////////////////////
+
+(
+~at = ~at ? IdentityDictionary.new;
+
+~at[\system] = (
+
+    ////////////////////////////////////////////////////////////
+    // BOOT
+    ////////////////////////////////////////////////////////////
+
+    boot: { |self|
+
+        "Adaptive Temperament: constructing system".postln;
+
+        ////////////////////////////////////////////////////////
+        // SERVER CHECK
+        ////////////////////////////////////////////////////////
+
+        if(s.serverRunning.not) {
+            "ERROR: Server is not running.".warn;
+            ^nil;
+        };
+
+        ////////////////////////////////////////////////////////
+        // IF SYSTEM ALREADY RUNNING, STOP IT FIRST
+        ////////////////////////////////////////////////////////
+
+        if(~at[\controlLoop].notNil and: { ~at[\controlLoop][\running] }) {
+            self.shutdown;
+        };
+
+        ////////////////////////////////////////////////////////
+        // CONSTRUCT MODULES (STRICT ORDER)
+        ////////////////////////////////////////////////////////
+
+        ~at[\field]        = ~makeField.();
+        ~at[\voiceManager] = ~makeVoiceManager.();
+        ~at[\ear]          = ~makeEar.();
+        ~at[\controlLoop]  = ~makeControlLoop.();
+
+        ////////////////////////////////////////////////////////
+        // VALIDATE CONSTRUCTION
+        ////////////////////////////////////////////////////////
+
+        if(
+            ~at[\field].isNil
+            or: { ~at[\voiceManager].isNil }
+            or: { ~at[\ear].isNil }
+            or: { ~at[\controlLoop].isNil }
+        ) {
+            "ERROR: Module construction failed.".warn;
+            ^nil;
+        };
+
+        ////////////////////////////////////////////////////////
+        // START ENGINE
+        ////////////////////////////////////////////////////////
+
+        // Ear intentionally NOT started here
+		~at[\controlLoop].start;
+
+        "Adaptive Temperament: READY".postln;
+
+    },
+
+    ////////////////////////////////////////////////////////////
+    // SHUTDOWN
+    ////////////////////////////////////////////////////////////
+
+    shutdown: { |self|
+
+        ////////////////////////////////////////////////////////
+        // STOP CONTROL LOOP SAFELY
+        ////////////////////////////////////////////////////////
+
+        if(~at[\controlLoop].notNil) {
+            ~at[\controlLoop].stop;
+        };
+
+        ////////////////////////////////////////////////////////
+        // STOP EAR
+        ////////////////////////////////////////////////////////
+
+        if(~at[\ear].notNil) {
+            ~at[\ear].stop;
+        };
+
+        ////////////////////////////////////////////////////////
+        // FREE VOICES
+        ////////////////////////////////////////////////////////
+
+        if(~at[\voiceManager].notNil) {
+            ~at[\voiceManager].panic;
+        };
+
+        ////////////////////////////////////////////////////////
+        // REMOVE MODULE REFERENCES
+        ////////////////////////////////////////////////////////
+
+        [
+            \field,
+            \voiceManager,
+            \ear,
+            \controlLoop
+        ].do { |key|
+            ~at.removeAt(key);
+        };
+
+        "Adaptive Temperament: stopped".postln;
+
+    }
+
+);
+)

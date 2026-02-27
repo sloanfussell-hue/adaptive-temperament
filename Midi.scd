@@ -1,0 +1,60 @@
+////////////////////////////////////////////////////////////
+// MIDI — SAFE + CLEAN CONNECTION
+////////////////////////////////////////////////////////////
+
+(
+MIDIdef.freeAll;
+
+MIDIClient.init;
+MIDIIn.disconnectAll;
+
+MIDIClient.sources.do { |src, i|
+    MIDIIn.connect(i);
+};
+
+////////////////////////////////////////////////////////////
+// NOTE ON
+////////////////////////////////////////////////////////////
+
+MIDIdef.noteOn(\atOn, { |vel, note|
+
+    var vm = ~at[\voiceManager];
+    if(vm.isNil) { ^nil };
+
+    if(vel > 0) {
+        vm.noteOn(note, vel);
+    } {
+        vm.noteOff(note);
+    };
+
+});
+
+////////////////////////////////////////////////////////////
+// NOTE OFF
+////////////////////////////////////////////////////////////
+
+MIDIdef.noteOff(\atOff, { |vel, note|
+
+    var vm = ~at[\voiceManager];
+    if(vm.notNil) {
+        vm.noteOff(note);
+    };
+
+});
+
+////////////////////////////////////////////////////////////
+// SUSTAIN (CC 64)
+////////////////////////////////////////////////////////////
+
+MIDIdef.cc(\atSustain, { |val, num|
+
+    var vm = ~at[\voiceManager];
+
+    if(vm.notNil and: { num == 64 }) {
+        vm.setSustain(val >= 64);
+    };
+
+});
+
+"Adaptive Temperament MIDI ready.".postln;
+)
