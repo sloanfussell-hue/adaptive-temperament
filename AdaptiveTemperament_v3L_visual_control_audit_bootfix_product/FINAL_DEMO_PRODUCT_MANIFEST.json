@@ -1,0 +1,41 @@
+{
+  "name": "AdaptiveTemperament_v3L_visual_full_system_control_audit_product",
+  "base": "AT_Version_3J_Memory_Adaptive_Gravity_Source_Order_Keeper",
+  "role": "final product candidate with visual full-system control audit bootfix and final visual controls wired",
+  "run": "AdaptiveTemperament_run.scd",
+  "demo_api": "~atFinalDemoScenario[\\run].();",
+  "quick_demo": "~atFinalDemoScenario[\\quick].();",
+  "stop": "~atFinalDemoScenario[\\stop].();",
+  "primary_audit": "~at[\\api][\\runVisualFullSystemControlAudit].();",
+  "memory_gravity_audit": "~at[\\api][\\runMemoryGravityAudit].();",
+  "contents_policy": "runtime source + final demo + product audit only; no tests folder, no old demo scaffolds, no WAV ballast, no .txt",
+  "retained_keepers": [
+    "v3J Memory/Adaptive Gravity Source Order",
+    "v3F musical surface/tone stabilization",
+    "global Motion live-authority gate",
+    "visual/Tension/adaptive timbre keeper",
+    "adaptive timbre preset musical audition keeper"
+  ],
+  "v3L_changes": [
+    "adds product-facing visual full-system control audit bootfix command",
+    "adds visual controls for Gravity follow mode off/fixed/memory/ear/hybrid",
+    "adds visual control for Memory learn rate",
+    "adds visual control for Spectrum Accordion amount",
+    "adds visual buttons for Memory seed, Memory/Gravity audit, Visual audit, and quick final demo",
+    "extends uiSnapshot with gravityFollowMode, memoryLearnRate, and spectrumAccordionAmount",
+    "keeps v3J Memory/Gravity source-order behavior unchanged"
+  ],
+  "commands": [
+    "~at[\\api][\\runVisualFullSystemControlAudit].();",
+    "~at[\\api][\\visualControlCoverageReport].();",
+    "~at[\\api][\\runMemoryGravityAudit].();",
+    "~atFinalDemoScenario[\\quick].();"
+  ],
+  "no_intentional_changes": [
+    "no pitch-law change",
+    "no ET snap",
+    "no chord/key detection",
+    "no additional tuning authority",
+    "no sample/WAV additions"
+  ]
+}
